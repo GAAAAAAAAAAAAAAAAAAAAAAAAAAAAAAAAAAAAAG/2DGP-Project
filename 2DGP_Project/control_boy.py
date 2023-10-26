@@ -1,7 +1,7 @@
 from pico2d import *
 
 import game_world
-from grass import Grass
+from background import Background
 
 from boy import Boy
 
@@ -24,15 +24,14 @@ def handle_events():
 
 def reset_world():
     global running
-    global grass
-    global grass2
+    global background
     global team
     global boy
 
     running = True
 
-    grass = Grass()
-    game_world.add_object(grass, 1)
+    background = Background()
+    game_world.add_object(background, 1)
 
     boy = Boy()
     game_world.add_object(boy, 0)

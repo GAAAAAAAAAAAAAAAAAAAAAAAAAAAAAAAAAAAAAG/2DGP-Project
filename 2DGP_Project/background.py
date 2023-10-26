@@ -1,12 +1,12 @@
 from pico2d import load_image
 
 
-class Grass:
+class Background:
     def __init__(self):
-        self.image = load_image('grass.png')
+        self.image = load_image('background.png')
 
     def draw(self):
-        self.image.draw(400, 30)
+        self.image.draw(0, 0)
 
     def update(self):
         pass
