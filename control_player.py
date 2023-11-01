@@ -3,7 +3,7 @@ from pico2d import *
 import game_world
 from background import Background
 
-from boy import Boy
+from player import Player
 
 
 # Game object class here
@@ -19,22 +19,23 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
         else:
-            boy.handle_event(event)
+            player.handle_event(event)
 
 
 def reset_world():
     global running
     global background
     global team
-    global boy
+    global player
 
     running = True
 
     background = Background()
-    game_world.add_object(background, 1)
+    game_world.add_object(background, 0)
 
-    boy = Boy()
-    game_world.add_object(boy, 0)
+
+    player = Player()
+    game_world.add_object(player, 1)
 
 
 
@@ -49,7 +50,7 @@ def render_world():
     update_canvas()
 
 
-open_canvas()
+open_canvas(600,800)
 reset_world()
 # game loop
 while running:

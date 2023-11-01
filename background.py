@@ -6,7 +6,7 @@ class Background:
         self.image = load_image('background.png')
 
     def draw(self):
-        self.image.draw(0, 0)
+        self.image.draw(300, 400)
 
     def update(self):
         pass
