@@ -1,9 +1,8 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 
-from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT
-
+from pico2d import *
 import game_world
-
+import game_framework
 
 # state event check
 # ( state event type, event value )
@@ -24,16 +23,28 @@ def left_down(e):
 def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
-def space_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
-
-
-
 # time_out = lambda e : e[0] == 'TIME_OUT'
+
+
+
+
+# Player Run Speed
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
+RUN_SPEED_KMPH = 20.0  # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Player Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
+
 
 
 
@@ -52,8 +63,6 @@ class Idle:
 
     @staticmethod
     def exit(player, e):
-        if space_down(e):
-            player.fire_ball()
         pass
 
     @staticmethod
@@ -85,9 +94,11 @@ class Run:
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 8
-        player.x += player.dir * 5
-        pass
+        # boy.frame = (boy.frame + 1) % 8
+        player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+        player.x = clamp(25, player.x, 1600 - 25)
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+
 
     @staticmethod
     def draw(player):
@@ -125,8 +136,8 @@ class StateMachine:
         self.player = player
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep, space_down: Idle},
-            Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, space_down: Run},
+            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, time_out: Sleep},
+            Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
             Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run}
         }
 
@@ -172,3 +183,12 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
+
+
+    def get_bb(self):
+        return self.x - 20, self.y - 50, self.x + 20, self.y + 50  # 튜플
+
+    def handle_collision(self, group, other):
+        if group == 'player:gate':     # 아... 볼과 충돌했구나...
+            self.ball_count += 1
