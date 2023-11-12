@@ -6,6 +6,9 @@ import game_framework
 import game_world
 from background import Background
 from player import Player
+from heart import Heart
+from gate import Gate
+from star import Star
 
 # player = None
 
@@ -23,6 +26,9 @@ def handle_events():
 def init():
     global background
     global player
+    global heart
+    global gate
+    global star
 
     running = True
 
@@ -31,6 +37,15 @@ def init():
 
     player = Player()
     game_world.add_object(player, 1)
+
+    heart = Heart()
+    game_world.add_object(heart, 1)
+
+    gate = Gate()
+    game_world.add_object(gate, 1)
+
+    star = Star()
+    game_world.add_object(star, 1)
 
 
 
@@ -48,14 +63,6 @@ def finish():
 
 def update():
     game_world.update()
-    # fill here
-    # for ball in balls.copy():
-    #     if game_world.collide(player, ball):
-    #         print('COLLISION player:Ball')
-    #         player.ball_count += 1     # 소년 관점의 충돌처리
-    #         balls.remove(ball)
-    #         game_world.remove_object(ball)  # 볼을 제거
-
     game_world.handle_collisions()
 
 
