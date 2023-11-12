@@ -46,6 +46,7 @@ class Start:
 
     @staticmethod
     def exit(player, e):
+        player.dir = -1
         pass
 
     @staticmethod
@@ -80,7 +81,7 @@ class LeftSkiing:
     @staticmethod
     def enter(player, e):
         if space_down(e):
-            player.dir = 1
+            player.dir = -1
 
     @staticmethod
     def exit(player, e):
@@ -90,6 +91,10 @@ class LeftSkiing:
     def do(player):
         # boy.frame = (boy.frame + 1) % 8
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
+        if(player.x < 0) :
+            player.dir = 1
+        if(player.x > 600):
+            player.dir = -1
         #player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
 
@@ -101,7 +106,7 @@ class RightSkiing:
     @staticmethod
     def enter(player, e):
         if space_down(e):
-            player.dir = -1
+            player.dir = 1
 
     @staticmethod
     def exit(player, e):
@@ -112,7 +117,10 @@ class RightSkiing:
         # boy.frame = (boy.frame + 1) % 8
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
         #player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-
+        if (player.x < 0):
+            player.dir = 1
+        if (player.x > 600):
+            player.dir = -1
 
     @staticmethod
     def draw(player):
