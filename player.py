@@ -1,6 +1,6 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 
-from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE,draw_rectangle
+from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE,draw_rectangle
 import game_world
 import game_framework
 
@@ -189,8 +189,10 @@ class Player:
         self.action = 3 #0은 처음 시작상태, 1은 왼쪽 이동, 2는 오른쪽 이동, 3은 부스터
         self.dir = 0    #-1 : 왼쪽, 1 : 오른쪽
         self.image = load_image('playersheet.png')
+
         self.state_machine = StateMachine(self)
         self.state_machine.start()
+        self.start_count = 3
 
     def update(self):
         self.state_machine.update()
@@ -200,6 +202,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
+
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
 

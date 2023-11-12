@@ -40,11 +40,11 @@ def quit():
 
 def run(start_mode):
     global running, stack
+    global frame_time
+
     running = True
     stack = [start_mode]
     start_mode.init()
-
-    global frame_time
     frame_time = 0.0
     current_time = time.time()
     while running:
