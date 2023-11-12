@@ -8,5 +8,5 @@ class Heart:
         pass
 
     def draw(self):
-        self.image.draw(400, 750)
+        self.image.clip_draw(0,0,100,100,400,770,50,50)
 
