@@ -1,6 +1,6 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 
-from pico2d import *
+from pico2d import get_time, load_image, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE,draw_rectangle
 import game_world
 import game_framework
 
@@ -30,7 +30,8 @@ SKIING_SPEED_PPS = (SKIING_SPEED_MPS * PIXEL_PER_METER)
 # Player Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+#FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 7
 
 
 
@@ -51,13 +52,14 @@ class Start:
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        #player.frame = (player.frame + 1) % 7
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
         if get_time() - player.wait_time > 2:
             player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(0,0, 100, 100, player.x, player.y)
+        player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
 
 class End:
 
@@ -89,18 +91,18 @@ class LeftSkiing:
 
     @staticmethod
     def do(player):
-        # boy.frame = (boy.frame + 1) % 8
+        #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :
             player.dir = 1
         if(player.x > 600):
             player.dir = -1
-        #player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
 
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(0,0, 100, 100, player.x, player.y)
+        player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
 
 class RightSkiing:
     @staticmethod
@@ -114,9 +116,9 @@ class RightSkiing:
 
     @staticmethod
     def do(player):
-        # boy.frame = (boy.frame + 1) % 8
+        #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
-        #player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
         if (player.x < 0):
             player.dir = 1
         if (player.x > 600):
@@ -125,7 +127,7 @@ class RightSkiing:
     @staticmethod
     def draw(player):
         #player.image.clip_draw(player.frame * 100, player.action * 100, 100, 100, player.x, player.y)
-        player.image.clip_draw(0,0,100,100,player.x,player.y)
+        player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
 
 
 class Boost:
@@ -182,11 +184,11 @@ class StateMachine:
 
 class Player:
     def __init__(self):
-        self.x, self.y = 300, 600
+        self.x, self.y = 300, 700
         self.frame = 0
         self.action = 3 #0은 처음 시작상태, 1은 왼쪽 이동, 2는 오른쪽 이동, 3은 부스터
         self.dir = 0    #-1 : 왼쪽, 1 : 오른쪽
-        self.image = load_image('test.png')
+        self.image = load_image('playersheet.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
 
@@ -202,7 +204,7 @@ class Player:
 
 
     def get_bb(self):
-        return self.x - 25, self.y - 50, self.x + 25, self.y + 40  # 튜플
+        return self.x - 35, self.y - 40, self.x + 35, self.y + 40  # 튜플
 
     def handle_collision(self, group, other):
         pass
