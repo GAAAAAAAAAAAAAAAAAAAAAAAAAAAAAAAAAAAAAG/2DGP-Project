@@ -3,6 +3,7 @@
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE,draw_rectangle
 import game_world
 import game_framework
+import play_mode
 
 # state event check
 # ( state event type, event value )
@@ -36,8 +37,6 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 #FRAMES_PER_ACTION = 8
 FRAMES_PER_ACTION = 7
-
-
 
 
 class Start:
@@ -96,6 +95,7 @@ class LeftSkiing:
 
     @staticmethod
     def do(player):
+        global hearts
         #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :

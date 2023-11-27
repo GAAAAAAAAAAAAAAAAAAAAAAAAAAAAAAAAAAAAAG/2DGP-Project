@@ -11,7 +11,7 @@ from gate import Gate
 from star import Star
 
 # player = None
-
+hearts = None
 def handle_events():
     events = get_events()
     for event in events:
@@ -26,7 +26,7 @@ def handle_events():
 def init():
     global background
     global player
-    global heart
+    global hearts
     global gate
     global star
 
@@ -38,8 +38,9 @@ def init():
     player = Player()
     game_world.add_object(player, 1)
 
-    heart = Heart()
-    game_world.add_object(heart, 1)
+    hearts = [Heart(450+x*55) for x in range(3)]
+    for heart in hearts:
+        game_world.add_object(heart, 1)
 
     gate = Gate()
     game_world.add_object(gate, 1)
