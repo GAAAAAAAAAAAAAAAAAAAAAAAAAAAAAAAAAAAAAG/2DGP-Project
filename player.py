@@ -9,10 +9,14 @@ import game_framework
 
 
 def space_down(e):
+    if e == None:
+        return None
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
 def time_out(e):
+    if e == None:
+        return None
     return e[0] == 'TIME_OUT'
 
 # time_out = lambda e : e[0] == 'TIME_OUT'
@@ -82,8 +86,9 @@ class End:
 class LeftSkiing:
     @staticmethod
     def enter(player, e):
-        if space_down(e):
-            player.dir = -1
+        # if space_down(e):
+        #     player.dir = -1
+        player.dir = -1
 
     @staticmethod
     def exit(player, e):
@@ -94,9 +99,9 @@ class LeftSkiing:
         #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :
-            player.dir = 1
-        if(player.x > 600):
-            player.dir = -1
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = RightSkiing
+            player.state_machine.cur_state.enter(player, None)
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
 
 
@@ -107,8 +112,9 @@ class LeftSkiing:
 class RightSkiing:
     @staticmethod
     def enter(player, e):
-        if space_down(e):
-            player.dir = 1
+        # if space_down(e):
+        #     player.dir = 1
+        player.dir = 1
 
     @staticmethod
     def exit(player, e):
@@ -118,12 +124,13 @@ class RightSkiing:
     def do(player):
         #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
-        if (player.x < 0):
-            player.dir = 1
-        if (player.x > 600):
-            player.dir = -1
 
+        if (player.x > 600):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = LeftSkiing
+            player.state_machine.cur_state.enter(player, None)
+
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
     @staticmethod
     def draw(player):
         #player.image.clip_draw(player.frame * 100, player.action * 100, 100, 100, player.x, player.y)
