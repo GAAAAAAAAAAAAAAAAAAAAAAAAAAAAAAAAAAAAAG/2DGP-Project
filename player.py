@@ -11,6 +11,7 @@ import server
 from heart import Heart
 from gate import Gate
 from star import Star
+import gameover_mode
 
 
 # state event check
@@ -102,18 +103,26 @@ class LeftSkiing:
     @staticmethod
     def do(player):
         global hearts
+
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
-        player.y -= SKIING_SPEED_PPS * game_framework.frame_time
+        #player.y -= SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :
+            player.hp -= 1
+            for heart in play_mode.hearts:
+                game_world.remove_object(heart)
+                play_mode.hearts.remove(heart)
+                break
+            if(player.hp == 0):
+                game_framework.change_mode(gameover_mode)
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = RightSkiing
             player.state_machine.cur_state.enter(player, None)
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
 
 
-    # @staticmethod
-    # def draw(player):
-        #player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
+    @staticmethod
+    def draw(player):
+        player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
 
 class RightSkiing:
     @staticmethod
@@ -130,17 +139,24 @@ class RightSkiing:
     def do(player):
         #player.frame = (player.frame + 1) % 7
         player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
-        player.y -= SKIING_SPEED_PPS * game_framework.frame_time
+        #player.y -= SKIING_SPEED_PPS * game_framework.frame_time
 
         if (player.x > 600):
+            player.hp -= 1
+            for heart in play_mode.hearts:
+                game_world.remove_object(heart)
+                play_mode.hearts.remove(heart)
+                break
+            if (player.hp == 0):
+                game_framework.change_mode(gameover_mode)
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = LeftSkiing
             player.state_machine.cur_state.enter(player, None)
 
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
-    # @staticmethod
-    # def draw(player):
-        # player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
+    @staticmethod
+    def draw(player):
+        player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
 
 
 class Boost:
@@ -190,8 +206,8 @@ class StateMachine:
 
         return False
 
-    # def draw(self):
-    #     self.cur_state.draw(self.player)
+    def draw(self):
+        self.cur_state.draw(self.player)
 
 
 
@@ -202,7 +218,7 @@ class Player:
         self.action = 3 #0은 처음 시작상태, 1은 왼쪽 이동, 2는 오른쪽 이동, 3은 부스터
         self.dir = -1    #-1 : 왼쪽, 1 : 오른쪽
         self.image = load_image('playersheet.png')
-
+        self.hp = 3
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.start_count = 3
@@ -210,27 +226,27 @@ class Player:
     def update(self):
         self.state_machine.update()
         #시도
-        #self.x = clamp(50.0, self.x, server.background.w - 50.0)
-        #self.y = clamp(50.0, self.y, server.background.h - 50.0)
+        # self.x = clamp(50.0, self.x, server.background.w - 50.0)
+        # self.y = clamp(50.0, self.y, server.background.h - 50.0)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
-        #self.state_machine.draw()
+        self.state_machine.draw()
 
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
         #시도
-        sx, sy = get_canvas_width() // 2, get_canvas_height() // 2 + 300
+        #sx, sy = get_canvas_width() // 2, get_canvas_height() // 2 + 300
 
-        #sx = self.x - server.background.window_left
-        #sy = self.y - server.background.window_bottom + 300
-
-        if self.dir == 1:
-            self.image.clip_draw(int(self.frame) * 100, 0, 100, 103, sx, sy, 75, 75)
-        elif self.dir == -1:
-            self.image.clip_composite_draw(int(self.frame) * 100, 0, 100, 103, 0, 'h', sx, sy, 75, 75)
+        # sx = self.x - server.background.window_left
+        # sy = self.y - server.background.window_bottom
+        #
+        # if self.dir == 1:
+        #     self.image.clip_draw(int(self.frame) * 100, 0, 100, 103, sx, sy, 75, 75)
+        # elif self.dir == -1:
+        #     self.image.clip_composite_draw(int(self.frame) * 100, 0, 100, 103, 0, 'h', sx, sy, 75, 75)
 
     def get_bb(self):
         return self.x - 35, self.y - 40, self.x + 35, self.y + 40  # 튜플
