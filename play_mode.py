@@ -2,9 +2,9 @@ import random
 
 from pico2d import *
 import game_framework
-
+import server
 import game_world
-from background import Background
+from background import InfiniteBackground as Background
 from player import Player
 from heart import Heart
 from gate import Gate
@@ -20,7 +20,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         else:
-            player.handle_event(event)
+            server.player.handle_event(event)
 
 
 def init():
@@ -32,11 +32,13 @@ def init():
 
     running = True
 
-    background = Background()
-    game_world.add_object(background, 0)
+    hide_cursor()
 
-    player = Player()
-    game_world.add_object(player, 1)
+    server.background = Background()
+    game_world.add_object(server.background, 0)
+
+    server.player = Player()
+    game_world.add_object(server.player, 1)
 
     hearts = [Heart(450+x*55) for x in range(3)]
     for heart in hearts:
@@ -47,8 +49,6 @@ def init():
 
     star = Star()
     game_world.add_object(star, 1)
-
-
 
     # 충돌 검사 필요 상황을 등록
     # game_world.add_collision_pair('player:ball', player, None)   # 소년을 등록
