@@ -18,7 +18,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
             game_framework.change_mode(level_mode)
 
 
