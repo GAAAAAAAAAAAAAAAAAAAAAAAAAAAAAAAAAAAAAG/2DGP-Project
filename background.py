@@ -18,6 +18,8 @@ class Background:
 
     def update(self):
         #시도
+        # self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
+        # self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
         self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
         self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
         pass

@@ -1,4 +1,9 @@
+import random
+
 from pico2d import *
+import game_world
+
+import server
 
 class Heart:
     def __init__(self, x):

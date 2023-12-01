@@ -108,9 +108,9 @@ class LeftSkiing:
         #player.y -= SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :
             player.hp -= 1
-            for heart in play_mode.hearts:
+            for heart in play_mode.server.hearts:
                 game_world.remove_object(heart)
-                play_mode.hearts.remove(heart)
+                play_mode.server.hearts.remove(heart)
                 break
             if(player.hp == 0):
                 game_framework.change_mode(gameover_mode)
@@ -143,9 +143,9 @@ class RightSkiing:
 
         if (player.x > 600):
             player.hp -= 1
-            for heart in play_mode.hearts:
+            for heart in play_mode.server.hearts:
                 game_world.remove_object(heart)
-                play_mode.hearts.remove(heart)
+                play_mode.server.hearts.remove(heart)
                 break
             if (player.hp == 0):
                 game_framework.change_mode(gameover_mode)

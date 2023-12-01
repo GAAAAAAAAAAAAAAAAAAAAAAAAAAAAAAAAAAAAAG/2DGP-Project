@@ -1,10 +1,16 @@
 import random
+import json
+import tomllib
+import os
 
 from pico2d import *
 import game_framework
 import server
 import game_world
-from background import InfiniteBackground as Background
+
+#from background import InfiniteBackground as Background
+
+from background import Background
 from player import Player
 from heart import Heart
 from gate import Gate
@@ -24,13 +30,13 @@ def handle_events():
 
 
 def init():
-    global background
-    global player
-    global hearts
-    global gate
-    global star
-
-    running = True
+    # global background
+    # global player
+    # global hearts
+    # global gate
+    # global star
+    #
+    # running = True
 
     hide_cursor()
 
@@ -39,13 +45,19 @@ def init():
 
     server.player = Player()
     game_world.add_object(server.player, 1)
+    game_world.add_collision_pair('player:gate', server.player, None)
 
-    hearts = [Heart(450+x*55) for x in range(3)]
-    for heart in hearts:
+    server.hearts = [Heart(450+x*55) for x in range(3)]
+    for heart in server.hearts:
         game_world.add_object(heart, 1)
 
-    gate = Gate()
-    game_world.add_object(gate, 1)
+    # gate = Gate()
+    # game_world.add_object(gate, 1)
+
+    for _ in range(10):
+        gate = Gate()
+        game_world.add_object(gate, 1)
+        game_world.add_collision_pair('player:gate', None, gate)
 
     star = Star()
     game_world.add_object(star, 1)
