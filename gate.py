@@ -33,9 +33,9 @@ class Gate:
 
 
     def update(self):
-        self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level
+        self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
         if self.y > 800:
-            if self.c == False:
+            if self.c == False and server.boost != 1.5:
                 server.player.hp -= 1
                 for heart in play_mode.server.hearts:
                     game_world.remove_object(heart)
@@ -50,7 +50,7 @@ class Gate:
     def draw(self):
         self.image.draw(self.x, self.y)
         #self.image.clip_draw(0,0,135,45,200,370)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
+        #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
         return self.x - 70, self.y - 25, self.x + 70, self.y + 25
