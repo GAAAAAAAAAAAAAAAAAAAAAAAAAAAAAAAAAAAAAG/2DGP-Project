@@ -3,6 +3,8 @@ import game_world
 import game_framework
 import random
 import server
+import play_mode
+import gameover_mode
 
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 SKIING_SPEED_KMPH = 20.0 # Km / Hour
@@ -21,13 +23,28 @@ class Gate:
         if Gate.image == None:
             Gate.image = load_image('redGate135.png')
 
-        self.x = x if x else random.randint(100, 500)
-        self.y = y if y else random.randint(-10000, 100)
+        # self.x = x
+        self.y = y
 
-        #self.image = load_image('redGate135.png')
+        self.x = x if x else random.randint(50, 550)
+        # self.y = y if y else random.randint(-10000, 100)
+
+        self.c = False
+
 
     def update(self):
         self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level
+        if self.y > 800:
+            if self.c == False:
+                server.player.hp -= 1
+                for heart in play_mode.server.hearts:
+                    game_world.remove_object(heart)
+                    play_mode.server.hearts.remove(heart)
+                    break
+            game_world.remove_object(self)
+
+        if (server.player.hp == 0):
+            game_framework.change_mode(gameover_mode)
         pass
 
     def draw(self):
@@ -42,4 +59,6 @@ class Gate:
         match group:
             case 'player:gate':
                 # fill here
-                game_world.remove_object(self)
+                #game_world.remove_object(self)
+                self.c = True
+                pass
