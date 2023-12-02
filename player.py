@@ -63,7 +63,7 @@ class Start:
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level) % 7
         if get_time() - player.wait_time > 2:
             player.state_machine.handle_event(('TIME_OUT', 0))
 
@@ -104,7 +104,7 @@ class LeftSkiing:
     def do(player):
         global hearts
 
-        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
+        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time* server.level
         #player.y -= SKIING_SPEED_PPS * game_framework.frame_time
         if(player.x < 0) :
             player.hp -= 1
@@ -117,7 +117,7 @@ class LeftSkiing:
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = RightSkiing
             player.state_machine.cur_state.enter(player, None)
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
 
 
     @staticmethod
@@ -138,7 +138,7 @@ class RightSkiing:
     @staticmethod
     def do(player):
         #player.frame = (player.frame + 1) % 7
-        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time
+        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time* server.level
         #player.y -= SKIING_SPEED_PPS * game_framework.frame_time
 
         if (player.x > 600):
@@ -153,7 +153,7 @@ class RightSkiing:
             player.state_machine.cur_state = LeftSkiing
             player.state_machine.cur_state.enter(player, None)
 
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 7
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
     @staticmethod
     def draw(player):
         player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
