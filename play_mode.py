@@ -46,13 +46,11 @@ def init():
     server.player = Player()
     game_world.add_object(server.player, 1)
     game_world.add_collision_pair('player:gate', server.player, None)
+    game_world.add_collision_pair('player:star', server.player, None)
 
     server.hearts = [Heart(450+x*55) for x in range(3)]
     for heart in server.hearts:
         game_world.add_object(heart, 1)
-
-    # gate = Gate()
-    # game_world.add_object(gate, 1)
 
     server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(100)]
     for gate in server.gates:
@@ -65,8 +63,12 @@ def init():
     #     game_world.add_object(gate, 1)
     #     game_world.add_collision_pair('player:gate', None, gate)
 
-    star = Star()
-    game_world.add_object(star, 1)
+    server.stars = [Star(None, y * (-3300) + (-500)) for y in range(10)]
+    for star in server.stars:
+        game_world.add_object(star, 1)
+        game_world.add_collision_pair('player:star', None, star)
+
+    server.boost = 1
 
     # 충돌 검사 필요 상황을 등록
     # game_world.add_collision_pair('player:ball', player, None)   # 소년을 등록

@@ -5,3 +5,5 @@ star = None
 hearts = None
 
 level = None
+boost = None
+boost_start = None

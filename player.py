@@ -32,8 +32,6 @@ def time_out(e):
 # time_out = lambda e : e[0] == 'TIME_OUT'
 
 
-
-
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 SKIING_SPEED_KMPH = 20.0  # Km / Hour
@@ -42,7 +40,8 @@ SKIING_SPEED_MPS = (SKIING_SPEED_MPM / 60.0)
 SKIING_SPEED_PPS = (SKIING_SPEED_MPS * PIXEL_PER_METER)
 
 # Player Action Speed
-TIME_PER_ACTION = 0.5
+#TIME_PER_ACTION = 0.5
+TIME_PER_ACTION = 1.0
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 7
 
@@ -117,6 +116,10 @@ class LeftSkiing:
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = RightSkiing
             player.state_machine.cur_state.enter(player, None)
+        if(server.boost_start):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = Boost
+            player.state_machine.cur_state.enter(player, None)
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
 
 
@@ -152,6 +155,10 @@ class RightSkiing:
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = LeftSkiing
             player.state_machine.cur_state.enter(player, None)
+        if (server.boost_start):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = Boost
+            player.state_machine.cur_state.enter(player, None)
 
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
     @staticmethod
@@ -161,19 +168,29 @@ class RightSkiing:
 
 class Boost:
     @staticmethod
-    def enter(boy, e):
+    def enter(player, e):
+        player.dir = 0
+        server.boost = 1.5
+        player.wait_time = get_time()
         pass
 
     @staticmethod
-    def exit(boy, e):
+    def exit(player, e):
+        server.boost = 1
+        server.boost_start = False
         pass
 
     @staticmethod
-    def do(boy):
+    def do(player):
+        player.x = 300
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
+        if get_time() - player.wait_time > 5:
+            player.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
     @staticmethod
-    def draw(boy):
+    def draw(player):
+        player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 125, 125)
         pass
 
 
@@ -186,7 +203,7 @@ class StateMachine:
             Start: {time_out:LeftSkiing},
             LeftSkiing: {space_down:RightSkiing},
             RightSkiing: {space_down:LeftSkiing},
-            Boost: {},
+            Boost: {time_out:LeftSkiing},
             End:{}
         }
 
@@ -235,7 +252,7 @@ class Player:
     def draw(self):
         self.state_machine.draw()
 
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
+        #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
         #시도
         #sx, sy = get_canvas_width() // 2, get_canvas_height() // 2 + 300
