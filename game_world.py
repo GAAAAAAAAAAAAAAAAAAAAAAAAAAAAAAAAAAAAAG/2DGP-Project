@@ -1,22 +1,14 @@
-objects = [[],[]]
+import pickle
 
-# 충돌의 세계
-collision_pairs = {}    #{ 'boy:ball' : [ [boy], [ball1,ball2,ball3,...] ] }
+objects = [[] for _ in range(4)]
+collision_pairs = {}
 
-def add_collision_pair(group, a, b):    # a 와 b 사이에 충돌 검사가 필요하다는 점을 등록
-    if group not in collision_pairs:
-        print(f'New group {group} added....')
-        collision_pairs[group] = [ [], [] ]
-    if a:
-        collision_pairs[group][0].append(a)
-    if b:
-        collision_pairs[group][1].append(b)
 
-def add_object(o, depth = 0):
+def add_object(o, depth=0):
     objects[depth].append(o)
 
 
-def add_objects(ol, depth = 0):
+def add_objects(ol, depth=0):
     objects[depth] += ol
 
 
@@ -25,10 +17,34 @@ def update():
         for o in layer:
             o.update()
 
+
 def render():
     for layer in objects:
         for o in layer:
             o.draw()
+
+
+def remove_collision_object(o):
+    for pairs in collision_pairs.values():
+        if o in pairs[0]:
+            pairs[0].remove(o)
+        if o in pairs[1]:
+            pairs[1].remove(o)
+
+
+def remove_object(o):
+    for layer in objects:
+        if o in layer:
+            layer.remove(o)
+            remove_collision_object(o)
+            del o
+            return
+    raise ValueError('Cannot delete non existing object')
+
+
+def clear():
+    for layer in objects:
+        layer.clear()
 
 
 def collide(a, b):
@@ -42,28 +58,43 @@ def collide(a, b):
 
     return True
 
-def remove_collision_object(o):
-    for pairs in collision_pairs.values():
-        if o in pairs[0]:
-            pairs[0].remove(o)
-        if o in pairs[1]:
-            pairs[1].remove(o)
 
-def remove_object(o):
-    for layer in objects:
-        if o in layer:
-            layer.remove(o)
-            return
-    raise ValueError('Cannot delete non existing object')
+def add_collision_pair(group, a, b):
+    if group not in collision_pairs:
+        # print(f'Added new group {group}')
+        collision_pairs[group] = [[], []]
+    if a:
+        collision_pairs[group][0].append(a)
+    if b:
+        collision_pairs[group][1].append(b)
 
-def clear():
-    for layer in objects:
-        layer.clear()
 
 def handle_collisions():
+    collided_pairs = []
     for group, pairs in collision_pairs.items():
         for a in pairs[0]:
             for b in pairs[1]:
                 if collide(a, b):
-                    a.handle_collision(group, b)
-                    b.handle_collision(group, a)
+                    collided_pairs.append((group, a, b))
+    for group, a, b in collided_pairs:
+        a.handle_collision(group, b)
+        b.handle_collision(group, a)
+
+
+def all_objects():
+    for layer in objects:
+        for o in layer:
+            yield o
+
+
+def save():
+    game = [objects, collision_pairs]
+    with open('game.sav', 'wb') as f:
+        pickle.dump(game, f)
+
+
+def load():
+    global objects, collision_pairs
+    with open('game.sav', 'rb') as f:
+        game = pickle.load(f)
+        objects, collision_pairs = game[0], game[1]

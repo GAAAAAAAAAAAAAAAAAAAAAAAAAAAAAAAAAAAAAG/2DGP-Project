@@ -1,11 +1,10 @@
 import game_framework
 from pico2d import *
-import level_mode
+import title_mode
 
-import play_mode
 def init():
     global image
-    image = load_image('title.png')
+    image = load_image('gameover.png')
 
 def finish():
     global image
@@ -18,8 +17,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
-            game_framework.change_mode(level_mode)
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_r):
+            game_framework.change_mode(title_mode)
 
 
 def draw():
