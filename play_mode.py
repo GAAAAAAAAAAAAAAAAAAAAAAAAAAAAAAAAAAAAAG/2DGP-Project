@@ -54,10 +54,16 @@ def init():
     # gate = Gate()
     # game_world.add_object(gate, 1)
 
-    for _ in range(10):
-        gate = Gate()
+    server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(100)]
+    for gate in server.gates:
         game_world.add_object(gate, 1)
         game_world.add_collision_pair('player:gate', None, gate)
+
+
+    # for _ in range(100):
+    #     gate = Gate()
+    #     game_world.add_object(gate, 1)
+    #     game_world.add_collision_pair('player:gate', None, gate)
 
     star = Star()
     game_world.add_object(star, 1)
