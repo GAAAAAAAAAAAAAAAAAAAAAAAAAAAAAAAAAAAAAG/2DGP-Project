@@ -3,14 +3,11 @@
 #from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE,draw_rectangle
 
 from pico2d import *
-
+from pico2d import load_font
 import game_world
 import game_framework
 import play_mode
 import server
-from heart import Heart
-from gate import Gate
-from star import Star
 import gameover_mode
 import gameclear_mode
 
@@ -87,7 +84,10 @@ class End:
         if(player.frame <16):
             player.frame +=  FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
         if get_time() - player.wait_time > 4:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+            server.stop = False
             game_framework.change_mode(gameclear_mode)
+
         pass
 
     @staticmethod
@@ -228,7 +228,7 @@ class StateMachine:
             LeftSkiing: {space_down:RightSkiing},
             RightSkiing: {space_down:LeftSkiing},
             Boost: {time_out:LeftSkiing},
-            End:{}
+            End:{time_out:Start}
         }
 
     def start(self):
@@ -265,6 +265,8 @@ class Player:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.start_count = 3
+        self.font = load_font('ENCR10B.TTF', 20)
+        self.point_count = 0
 
     def update(self):
         self.state_machine.update()
@@ -277,7 +279,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-
+        self.font.draw(300, 770, f'point : {self.point_count}', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
         #시도
@@ -295,5 +297,7 @@ class Player:
         return self.x - 35, self.y - 40, self.x + 35, self.y + 40  # 튜플
 
     def handle_collision(self, group, other):
+        if group == 'player:point':
+            self.point_count += 1
         pass
         #if group == 'player:gate':     # 아... 볼과 충돌했구나...

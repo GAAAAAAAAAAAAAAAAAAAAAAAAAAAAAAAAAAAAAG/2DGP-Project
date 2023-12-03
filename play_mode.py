@@ -16,8 +16,9 @@ from heart import Heart
 from gate import Gate
 from star import Star
 from finishline import Finishline
+from point import Point
 
-# player = None
+
 hearts = None
 def handle_events():
     events = get_events()
@@ -36,11 +37,14 @@ def init():
     server.background = Background()
     game_world.add_object(server.background, 0)
 
+    server.stop = False
+
     server.player = Player()
     game_world.add_object(server.player, 2)
     game_world.add_collision_pair('player:gate', server.player, None)
     game_world.add_collision_pair('player:star', server.player, None)
     game_world.add_collision_pair('player:finishline', server.player, None)
+    game_world.add_collision_pair('player:point', server.player, None)
 
     server.hearts = [Heart(450+x*55) for x in range(3)]
     for heart in server.hearts:
@@ -60,8 +64,13 @@ def init():
     game_world.add_object(server.finishline, 1)
     game_world.add_collision_pair('player:finishline', None, server.finishline)
 
+    server.points = [Point(None, y * (-80) + (-600)) for y in range(1000)]
+    for point in server.points:
+        game_world.add_object(point, 2)
+        game_world.add_collision_pair('player:point', None, point)
+
     server.boost = 1
-    server.stop = False
+
 
 
 def finish():
