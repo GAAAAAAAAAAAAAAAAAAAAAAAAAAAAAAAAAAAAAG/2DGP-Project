@@ -137,6 +137,7 @@ class LeftSkiing:
 
     @staticmethod
     def draw(player):
+        player.particle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y, 75, 75)
         player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
 
 class RightSkiing:
@@ -176,9 +177,10 @@ class RightSkiing:
             player.state_machine.cur_state = End
             player.state_machine.cur_state.enter(player, None)
 
-        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level) % 7
     @staticmethod
     def draw(player):
+        player.particle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y, 75, 75)
         player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
 
 
@@ -256,6 +258,7 @@ class Player:
         self.action = 3 #0은 처음 시작상태, 1은 왼쪽 이동, 2는 오른쪽 이동, 3은 부스터
         self.dir = -1    #-1 : 왼쪽, 1 : 오른쪽
         self.image = load_image('playersheet.png')
+        self.particle = load_image('snowparticle.png')
         self.hp = 3
         self.state_machine = StateMachine(self)
         self.state_machine.start()
