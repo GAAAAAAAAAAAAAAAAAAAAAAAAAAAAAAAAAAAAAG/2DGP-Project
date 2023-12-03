@@ -3,9 +3,7 @@ import game_world
 import game_framework
 import random
 import server
-import player
 import play_mode
-import gameover_mode
 
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 SKIING_SPEED_KMPH = 20.0 # Km / Hour
@@ -18,34 +16,32 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 7
 
-class Star:
+class Finishline:
     image = None
-    def __init__(self, x = None, y = None):
-        if Star.image == None:
-            Star.image = load_image('star.png')
+    def __init__(self):
+        if Finishline.image == None:
+            Finishline.image = load_image('finishline.png')
 
-        self.x = x if x else random.randint(50, 550)
-        self.y = y
+        self.x = 300
+        self.y = -13000
+        self.c = False
 
 
     def update(self):
-        if server.stop == False:
-            self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level
-        if self.y > 800:
-            game_world.remove_object(self)
+        if self.c == False:
+            self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
         pass
 
     def draw(self):
-        self.image.clip_draw(0, 0, 100, 100, self.x, self.y, 30, 30)
+        self.image.clip_draw(0, 0, 600, 100, self.x, self.y)
         draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
-        return self.x - 15, self.y - 15, self.x + 15, self.y + 15
+        return self.x - 300, self.y - 50, self.x + 300, self.y
 
     def handle_collision(self, group, other):
         match group:
-            case 'player:star':
-                # fill here
-                game_world.remove_object(self)
-                server.boost_start = True
+            case 'player:finishline':
+                self.c = True
+                server.stop = True
                 pass

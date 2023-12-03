@@ -33,7 +33,8 @@ class Gate:
 
 
     def update(self):
-        self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
+        if server.stop == False:
+            self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
         if self.y > 800:
             if self.c == False and server.boost != 1.5:
                 server.player.hp -= 1

@@ -15,6 +15,7 @@ from player import Player
 from heart import Heart
 from gate import Gate
 from star import Star
+from finishline import Finishline
 
 # player = None
 hearts = None
@@ -30,51 +31,37 @@ def handle_events():
 
 
 def init():
-    # global background
-    # global player
-    # global hearts
-    # global gate
-    # global star
-    #
-    # running = True
-
     hide_cursor()
 
     server.background = Background()
     game_world.add_object(server.background, 0)
 
     server.player = Player()
-    game_world.add_object(server.player, 1)
+    game_world.add_object(server.player, 2)
     game_world.add_collision_pair('player:gate', server.player, None)
     game_world.add_collision_pair('player:star', server.player, None)
+    game_world.add_collision_pair('player:finishline', server.player, None)
 
     server.hearts = [Heart(450+x*55) for x in range(3)]
     for heart in server.hearts:
-        game_world.add_object(heart, 1)
+        game_world.add_object(heart, 2)
 
-    server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(100)]
+    server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(20)]
     for gate in server.gates:
-        game_world.add_object(gate, 1)
+        game_world.add_object(gate, 2)
         game_world.add_collision_pair('player:gate', None, gate)
 
-
-    # for _ in range(100):
-    #     gate = Gate()
-    #     game_world.add_object(gate, 1)
-    #     game_world.add_collision_pair('player:gate', None, gate)
-
-    server.stars = [Star(None, y * (-3300) + (-500)) for y in range(10)]
+    server.stars = [Star(None, y * (-3800) + (-600)) for y in range(10)]
     for star in server.stars:
-        game_world.add_object(star, 1)
+        game_world.add_object(star, 2)
         game_world.add_collision_pair('player:star', None, star)
 
+    server.finishline = Finishline()
+    game_world.add_object(server.finishline, 1)
+    game_world.add_collision_pair('player:finishline', None, server.finishline)
+
     server.boost = 1
-
-    # 충돌 검사 필요 상황을 등록
-    # game_world.add_collision_pair('player:ball', player, None)   # 소년을 등록
-    # for ball in balls:
-    #     game_world.add_collision_pair('player:ball', None, ball)
-
+    server.stop = False
 
 
 def finish():
