@@ -1,10 +1,13 @@
 import game_framework
 from pico2d import *
 import title_mode
+import server
 
 def init():
     global image
+    global pointprint
     image = load_image('gameclear.png')
+    pointprint = load_font('ENCR10B.TTF', 30)
 
 def finish():
     global image
@@ -24,6 +27,7 @@ def handle_events():
 def draw():
     clear_canvas()
     image.draw(300,400)
+    pointprint.draw(150, 580, f'your point : {server.player.point_count}', (0, 0, 0))
     update_canvas()
 
 

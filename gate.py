@@ -62,4 +62,5 @@ class Gate:
                 # fill here
                 #game_world.remove_object(self)
                 self.c = True
+                server.player.point_count += 10
                 pass
