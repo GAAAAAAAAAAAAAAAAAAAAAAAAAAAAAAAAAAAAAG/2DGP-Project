@@ -1,4 +1,5 @@
 from pico2d import *
+from pico2d import load_font
 import game_world
 import game_framework
 import random
@@ -20,19 +21,30 @@ class Minimap:
     def __init__(self):
         self.image = load_image('minimap.png')
         self.arrow_image = load_image('minimap_arrow.png')
-        self.x = 60
-        self.y = 740
-        self.arrow_y = 790
-
+        self.x = 45
+        self.y = 640
+        self.arrow_y = 685 + 50*(server.level-1)
+        self.font = load_font('ENCR10B.TTF', 20)
+        self.distance_count = 0
+        self.rounded_distance_count = 0
 
     def update(self):
         if server.stop == False:
-            self.arrow_y -= SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost * 0.01
+            self.arrow_y -= SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost  * (0.01 + 0.0007 * server.level)
+            self.distance_count += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost * 0.01195
+            self.rounded_distance_count = round(self.distance_count, 2)
         pass
 
     def draw(self):
-        self.image.clip_draw(0, 0, 50, 100, self.x, self.y)
+        if server.level == 1.0:
+            self.image.clip_draw(0, 0, 50, 100, self.x, self.y, 50, 100)
+        if server.level == 2.0:
+            self.image.clip_draw(0, 0, 50, 100, self.x, self.y, 50, 200)
+        if server.level == 3.0:
+            self.image.clip_draw(0, 0, 50, 100, self.x, self.y, 50, 315)
         self.arrow_image.clip_draw(0, 0, 100, 100, self.x, self.arrow_y, 10, 10)
+
+        self.font.draw(75, 770, f'distance : {self.rounded_distance_count}', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
