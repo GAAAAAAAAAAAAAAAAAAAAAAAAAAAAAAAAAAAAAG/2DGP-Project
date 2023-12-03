@@ -12,6 +12,7 @@ from heart import Heart
 from gate import Gate
 from star import Star
 import gameover_mode
+import gameclear_mode
 
 
 # state event check
@@ -71,9 +72,10 @@ class Start:
         player.image.clip_composite_draw(int(player.frame)*100,0, 100, 103, 0,'h', player.x, player.y,75,75)
 
 class End:
-
     @staticmethod
     def enter(player, e):
+        player.image = load_image('finish_animation_sheet.png')
+        player.wait_time = get_time()
         pass
 
     @staticmethod
@@ -82,9 +84,15 @@ class End:
 
     @staticmethod
     def do(player):
-       pass
+        if(player.frame <16):
+            player.frame +=  FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        if get_time() - player.wait_time > 4:
+            game_framework.change_mode(gameclear_mode)
+        pass
+
     @staticmethod
     def draw(player):
+        player.image.clip_composite_draw(int(player.frame) * 57, 0, 57, 65, 0, 'h', player.x, player.y, 100, 100)
         pass
 
 
@@ -119,6 +127,10 @@ class LeftSkiing:
         if(server.boost_start):
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = Boost
+            player.state_machine.cur_state.enter(player, None)
+        if(server.stop):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = End
             player.state_machine.cur_state.enter(player, None)
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
 
@@ -159,6 +171,10 @@ class RightSkiing:
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = Boost
             player.state_machine.cur_state.enter(player, None)
+        if (server.stop):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = End
+            player.state_machine.cur_state.enter(player, None)
 
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time* server.level) % 7
     @staticmethod
@@ -184,6 +200,11 @@ class Boost:
     def do(player):
         player.x = 300
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
+        if (server.stop):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = End
+            player.state_machine.cur_state.enter(player, None)
+
         if get_time() - player.wait_time > 5:
             player.state_machine.handle_event(('TIME_OUT', 0))
         pass
