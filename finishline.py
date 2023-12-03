@@ -23,7 +23,7 @@ class Finishline:
             Finishline.image = load_image('finishline.png')
 
         self.x = 300
-        self.y = -13000
+        self.y = -5300
         self.c = False
 
 

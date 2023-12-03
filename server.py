@@ -1,9 +1,12 @@
 player = None
 background = None
-gate = None
-star = None
+gates = None
+stars = None
 hearts = None
+finishline = None
+points = None
 
 level = None
 boost = None
 boost_start = None
+stop = None
