@@ -23,9 +23,8 @@ class Finishline:
             Finishline.image = load_image('finishline.png')
 
         self.x = 300
-        self.y = -5300
+        self.y = -8000*int(server.level) - 200
         self.c = False
-
 
     def update(self):
         if self.c == False:
@@ -34,7 +33,7 @@ class Finishline:
 
     def draw(self):
         self.image.clip_draw(0, 0, 600, 100, self.x, self.y)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
+        #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
         return self.x - 300, self.y - 50, self.x + 300, self.y

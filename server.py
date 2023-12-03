@@ -10,3 +10,4 @@ level = None
 boost = None
 boost_start = None
 stop = None
+minimap = None

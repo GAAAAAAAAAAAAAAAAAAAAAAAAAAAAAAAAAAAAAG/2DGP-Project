@@ -17,6 +17,7 @@ from gate import Gate
 from star import Star
 from finishline import Finishline
 from point import Point
+from minimap import Minimap
 
 
 hearts = None
@@ -50,12 +51,14 @@ def init():
     for heart in server.hearts:
         game_world.add_object(heart, 2)
 
-    server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(20)]
+    #8000 16000 24000
+    server.gates = [Gate(None, y*(-500)+(-1000)) for y in range(15*int(server.level))]
     for gate in server.gates:
         game_world.add_object(gate, 2)
         game_world.add_collision_pair('player:gate', None, gate)
 
-    server.stars = [Star(None, y * (-3800) + (-600)) for y in range(10)]
+    #7900 15800 23700
+    server.stars = [Star(None, y * (-3800) + (-600)) for y in range(2*int(server.level))]
     for star in server.stars:
         game_world.add_object(star, 2)
         game_world.add_collision_pair('player:star', None, star)
@@ -64,13 +67,16 @@ def init():
     game_world.add_object(server.finishline, 1)
     game_world.add_collision_pair('player:finishline', None, server.finishline)
 
-    server.points = [Point(None, y * (-80) + (-600)) for y in range(1000)]
+    #7900 15800 23700
+    server.points = [Point(None, y * (-80) + (-600)) for y in range(95*int(server.level))]
     for point in server.points:
         game_world.add_object(point, 2)
         game_world.add_collision_pair('player:point', None, point)
 
-    server.boost = 1
+    server.minimap = Minimap()
+    game_world.add_object(server.minimap, 1)
 
+    server.boost = 1
 
 
 def finish():
