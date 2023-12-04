@@ -61,7 +61,17 @@ class Start:
     @staticmethod
     def do(player):
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level) % 7
+        if get_time() - player.wait_time >1.7 and get_time() - player.wait_time < 2.0:
+            player.start = True
+            events = get_events()
+            for event in events:
+                if event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+                    player.start = False
+                    player.state_machine.cur_state.exit(player, None)
+                    player.state_machine.cur_state = Boost_LeftSkiing
+                    player.state_machine.cur_state.enter(player, None)
         if get_time() - player.wait_time > 2:
+            player.start = False
             player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
@@ -88,7 +98,6 @@ class End:
             player.state_machine.handle_event(('TIME_OUT', 0))
             server.stop = False
             game_framework.change_mode(gameclear_mode)
-
         pass
 
     @staticmethod
@@ -319,7 +328,9 @@ class Player:
         self.state_machine.start()
         self.start_count = 3
         self.font = load_font('ENCR10B.TTF', 20)
+        self.startfont = load_font('ENCR10B.TTF', 30)
         self.point_count = 0
+        self.start = False
 
         if not Player.point_eat_sound:
             Player.point_eat_sound = load_wav('pointsound.wav')
@@ -340,6 +351,8 @@ class Player:
     def draw(self):
         self.state_machine.draw()
         self.font.draw(100, 740, f'point : {self.point_count}', (0, 0, 0))
+        if self.start == True:
+            self.startfont.draw(100, 540, f'Press "space" key!!!', (0, 255, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
 
