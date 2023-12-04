@@ -27,7 +27,6 @@ class Point:
         self.x = x if x else random.randint(50, 550)
         self.y = y
 
-
     def update(self):
         if server.stop == False:
             self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost

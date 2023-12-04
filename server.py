@@ -5,6 +5,7 @@ stars = None
 hearts = None
 finishline = None
 points = None
+heartitems = None
 
 level = None
 boost = None

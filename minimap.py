@@ -42,9 +42,9 @@ class Minimap:
             self.image.clip_draw(0, 0, 50, 100, self.x, self.y, 50, 200)
         if server.level == 3.0:
             self.image.clip_draw(0, 0, 50, 100, self.x, self.y, 50, 315)
-        self.arrow_image.clip_draw(0, 0, 100, 100, self.x, self.arrow_y, 10, 10)
+        self.arrow_image.clip_draw(0, 0, 100, 100, self.x, self.arrow_y, 15, 15)
 
-        self.font.draw(75, 770, f'distance : {self.rounded_distance_count}', (0, 0, 0))
+        self.font.draw(100, 770, f'distance : {self.rounded_distance_count}', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
