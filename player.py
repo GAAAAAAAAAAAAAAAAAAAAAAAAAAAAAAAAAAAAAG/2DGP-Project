@@ -10,6 +10,7 @@ import play_mode
 import server
 import gameover_mode
 import gameclear_mode
+import random
 
 
 # state event check
@@ -61,15 +62,80 @@ class Start:
     @staticmethod
     def do(player):
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level) % 7
-        if get_time() - player.wait_time >1.7 and get_time() - player.wait_time < 2.0:
+        if get_time() - player.wait_time >1.0 and get_time() - player.wait_time < 2.0:
             player.start = True
             events = get_events()
-            for event in events:
-                if event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-                    player.start = False
-                    player.state_machine.cur_state.exit(player, None)
-                    player.state_machine.cur_state = Boost_LeftSkiing
-                    player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 1:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_1:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 2:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_2:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 3:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_3:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 4:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_4:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 5:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_5:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 6:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_6:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 7:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_7:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 8:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_8:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 9:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_9:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+            if player.numkey == 0:
+                for event in events:
+                    if event.type == SDL_KEYDOWN and event.key == SDLK_0:
+                        player.start = False
+                        player.state_machine.cur_state.exit(player, None)
+                        player.state_machine.cur_state = Boost_LeftSkiing
+                        player.state_machine.cur_state.enter(player, None)
+
         if get_time() - player.wait_time > 2:
             player.start = False
             player.state_machine.handle_event(('TIME_OUT', 0))
@@ -331,6 +397,7 @@ class Player:
         self.startfont = load_font('ENCR10B.TTF', 30)
         self.point_count = 0
         self.start = False
+        self.numkey = random.randint(0,9)
 
         if not Player.point_eat_sound:
             Player.point_eat_sound = load_wav('pointsound.wav')
@@ -352,7 +419,7 @@ class Player:
         self.state_machine.draw()
         self.font.draw(100, 740, f'point : {self.point_count}', (0, 0, 0))
         if self.start == True:
-            self.startfont.draw(100, 540, f'Press "space" key!!!', (0, 255, 0))
+            self.startfont.draw(100, 540, f'Press {self.numkey} key!!!', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
 
