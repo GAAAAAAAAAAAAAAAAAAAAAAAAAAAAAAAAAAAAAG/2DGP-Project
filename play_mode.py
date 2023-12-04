@@ -13,6 +13,7 @@ import game_world
 from background import Background
 from player import Player
 from heart import Heart
+from heartitem import Heartitem
 from gate import Gate
 from star import Star
 from finishline import Finishline
@@ -47,6 +48,7 @@ def init():
     game_world.add_collision_pair('player:star', server.player, None)
     game_world.add_collision_pair('player:finishline', server.player, None)
     game_world.add_collision_pair('player:point', server.player, None)
+    game_world.add_collision_pair('player:heartitem', server.player, None)
 
     server.hearts = [Heart(450+x*55) for x in range(3)]
     for heart in server.hearts:
@@ -73,6 +75,12 @@ def init():
     for point in server.points:
         game_world.add_object(point, 2)
         game_world.add_collision_pair('player:point', None, point)
+
+    #8400 14200 20000
+    server.heartitems = [Heartitem(None, y * (-5800) + (-2600)) for y in range(1 * int(server.level))]
+    for heartitem in server.heartitems:
+        game_world.add_object(heartitem, 2)
+        game_world.add_collision_pair('player:heartitem', None, heartitem)
 
     server.minimap = Minimap()
     game_world.add_object(server.minimap, 1)
