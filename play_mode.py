@@ -39,6 +39,7 @@ def init():
     game_world.add_object(server.background, 0)
 
     server.stop = False
+    game_world.collision_pairs = {}
 
     server.player = Player()
     game_world.add_object(server.player, 2)
