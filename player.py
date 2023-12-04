@@ -73,6 +73,7 @@ class End:
     def enter(player, e):
         player.image = load_image('finish_animation_sheet.png')
         player.wait_time = get_time()
+        Player.applause_sound.play()
         pass
 
     @staticmethod
@@ -183,39 +184,6 @@ class RightSkiing:
         player.snowparticle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y, 75, 75)
         player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
 
-
-# class Boost:
-#     @staticmethod
-#     def enter(player, e):
-#         player.dir = 0
-#         server.boost = 1.5
-#         player.wait_time = get_time()
-#         pass
-#
-#     @staticmethod
-#     def exit(player, e):
-#         server.boost = 1
-#         server.boost_start = False
-#         pass
-#
-#     @staticmethod
-#     def do(player):
-#         player.x = 300
-#         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
-#         if (server.stop):
-#             player.state_machine.cur_state.exit(player, None)
-#             player.state_machine.cur_state = End
-#             player.state_machine.cur_state.enter(player, None)
-#
-#         if get_time() - player.wait_time > 5:
-#             player.state_machine.handle_event(('TIME_OUT', 0))
-#         pass
-#
-#     @staticmethod
-#     def draw(player):
-#         player.fireparticle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y+15, 125, 125)
-#         player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 125, 125)
-#         pass
 
 class Boost_LeftSkiing:
     @staticmethod
@@ -334,6 +302,10 @@ class StateMachine:
 
 
 class Player:
+    point_eat_sound = None
+    star_eat_sound = None
+    applause_sound = None
+    boost_sound = None
     def __init__(self):
         self.x, self.y = 300, 700
         self.frame = 0
@@ -349,30 +321,27 @@ class Player:
         self.font = load_font('ENCR10B.TTF', 20)
         self.point_count = 0
 
+        if not Player.point_eat_sound:
+            Player.point_eat_sound = load_wav('pointsound.wav')
+            Player.star_eat_sound = load_wav('starsound.wav')
+            Player.applause_sound = load_wav('applause.wav')
+            Player.boost_sound = load_wav('boostsound.wav')
+            Player.point_eat_sound.set_volume(50)
+            Player.star_eat_sound.set_volume(50)
+            Player.applause_sound.set_volume(25)
+            Player.boost_sound.set_volume(50)
+
     def update(self):
         self.state_machine.update()
-        #시도
-        # self.x = clamp(50.0, self.x, server.background.w - 50.0)
-        # self.y = clamp(50.0, self.y, server.background.h - 50.0)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(280, 770, f'point : {self.point_count}', (0, 0, 0))
+        self.font.draw(100, 740, f'point : {self.point_count}', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
-        #시도
-        #sx, sy = get_canvas_width() // 2, get_canvas_height() // 2 + 300
-
-        # sx = self.x - server.background.window_left
-        # sy = self.y - server.background.window_bottom
-        #
-        # if self.dir == 1:
-        #     self.image.clip_draw(int(self.frame) * 100, 0, 100, 103, sx, sy, 75, 75)
-        # elif self.dir == -1:
-        #     self.image.clip_composite_draw(int(self.frame) * 100, 0, 100, 103, 0, 'h', sx, sy, 75, 75)
 
     def get_bb(self):
         return self.x - 35, self.y - 40, self.x + 35, self.y + 40  # 튜플
@@ -380,5 +349,9 @@ class Player:
     def handle_collision(self, group, other):
         if group == 'player:point':
             self.point_count += 10
+            Player.point_eat_sound.play()
+        if group == 'player:star':
+            Player.star_eat_sound.play()
+            Player.boost_sound.play()
         pass
-        #if group == 'player:gate':     # 아... 볼과 충돌했구나...
+

@@ -1,35 +1,66 @@
 from pico2d import *
 import server
 import random
+import game_framework
 
+
+# class Background:
+#     def __init__(self):
+#         self.image = load_image('Scrallbackground.png')
+#         self.cw = get_canvas_width()
+#         self.ch = get_canvas_height()
+#         self.w = self.image.w
+#         self.h = self.image.h
+#
+#     def draw(self):
+#         #self.image.draw(300, 400)
+#         # 시도
+#         self.image.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
+#         #player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 75, 75)
+#
+#     def update(self):
+#         #시도
+#         # self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
+#         # self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
+#         self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
+#         self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
+#         pass
+
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
+SKIING_SPEED_KMPH = 20.0 # Km / Hour
+SKIING_SPEED_MPM = (SKIING_SPEED_KMPH * 1000.0 / 60.0)
+SKIING_SPEED_MPS = (SKIING_SPEED_MPM / 60.0)
+SKIING_SPEED_PPS = (SKIING_SPEED_MPS * PIXEL_PER_METER)
+
+# Player Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 7
 
 class Background:
     def __init__(self):
-        self.image = load_image('Scrallbackground.png')
-        self.cw = get_canvas_width()
-        self.ch = get_canvas_height()
-        self.w = self.image.w
-        self.h = self.image.h
+        self.image = load_image('ScrallbackgroundLong.png')
+        self.y = -800
+        self.bgm = load_music('bgm.mp3')
+        self.bgm.set_volume(32)
+        self.bgm.repeat_play()
 
     def draw(self):
-        #self.image.draw(300, 400)
-        # 시도
-        self.image.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
+        self.image.clip_draw(0, 15800 + int(self.y), 600, 800, 300, 400)
+        #self.image.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
+        #player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 75, 75)
 
     def update(self):
-        #시도
-        # self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
-        # self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
-        self.window_left = clamp(0, int(server.player.x) - self.cw // 2, self.w - self.cw - 1)
-        self.window_bottom = clamp(0, int(server.player.y) - self.ch // 2, self.h - self.ch - 1)
+        if server.stop == False:
+            self.y -= SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
+        if(self.y<-15000):
+            self.y = -800
         pass
+
 
 
 cx = 900 % 800
 cy = 700 // 600
-
-
-
 
 
 class InfiniteBackground:
