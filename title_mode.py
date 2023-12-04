@@ -1,6 +1,6 @@
 import game_framework
 from pico2d import *
-import level_mode
+import explanation_mode
 
 import play_mode
 def init():
@@ -26,8 +26,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
-            #titleclicksound.play()
-            game_framework.change_mode(level_mode)
+            game_framework.change_mode(explanation_mode)
 
 
 def draw():
