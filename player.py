@@ -279,7 +279,7 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        self.font.draw(300, 770, f'point : {self.point_count}', (0, 0, 0))
+        self.font.draw(280, 770, f'point : {self.point_count}', (0, 0, 0))
         #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
         #시도
@@ -298,6 +298,6 @@ class Player:
 
     def handle_collision(self, group, other):
         if group == 'player:point':
-            self.point_count += 1
+            self.point_count += 10
         pass
         #if group == 'player:gate':     # 아... 볼과 충돌했구나...

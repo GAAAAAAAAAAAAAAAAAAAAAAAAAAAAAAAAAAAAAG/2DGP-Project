@@ -30,14 +30,14 @@ class Point:
 
     def update(self):
         if server.stop == False:
-            self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level
+            self.y += SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
         if self.y > 800:
             game_world.remove_object(self)
         pass
 
     def draw(self):
         self.image.clip_draw(0, 0, 100, 100, self.x, self.y, 30, 30)
-        draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
+        #draw_rectangle(*self.get_bb())  # 튜플을 풀어헤쳐서 인자로 전달.
 
     def get_bb(self):
         return self.x - 15, self.y - 15, self.x + 15, self.y + 15
