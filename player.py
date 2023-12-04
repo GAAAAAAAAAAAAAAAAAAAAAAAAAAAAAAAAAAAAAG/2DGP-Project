@@ -126,7 +126,7 @@ class LeftSkiing:
             player.state_machine.cur_state.enter(player, None)
         if(server.boost_start):
             player.state_machine.cur_state.exit(player, None)
-            player.state_machine.cur_state = Boost
+            player.state_machine.cur_state = Boost_LeftSkiing
             player.state_machine.cur_state.enter(player, None)
         if(server.stop):
             player.state_machine.cur_state.exit(player, None)
@@ -170,7 +170,7 @@ class RightSkiing:
             player.state_machine.cur_state.enter(player, None)
         if (server.boost_start):
             player.state_machine.cur_state.exit(player, None)
-            player.state_machine.cur_state = Boost
+            player.state_machine.cur_state = Boost_RightSkiing
             player.state_machine.cur_state.enter(player, None)
         if (server.stop):
             player.state_machine.cur_state.exit(player, None)
@@ -184,24 +184,63 @@ class RightSkiing:
         player.image.clip_draw(int(player.frame)*100,0,100,103,player.x,player.y,75,75)
 
 
-class Boost:
+# class Boost:
+#     @staticmethod
+#     def enter(player, e):
+#         player.dir = 0
+#         server.boost = 1.5
+#         player.wait_time = get_time()
+#         pass
+#
+#     @staticmethod
+#     def exit(player, e):
+#         server.boost = 1
+#         server.boost_start = False
+#         pass
+#
+#     @staticmethod
+#     def do(player):
+#         player.x = 300
+#         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
+#         if (server.stop):
+#             player.state_machine.cur_state.exit(player, None)
+#             player.state_machine.cur_state = End
+#             player.state_machine.cur_state.enter(player, None)
+#
+#         if get_time() - player.wait_time > 5:
+#             player.state_machine.handle_event(('TIME_OUT', 0))
+#         pass
+#
+#     @staticmethod
+#     def draw(player):
+#         player.fireparticle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y+15, 125, 125)
+#         player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 125, 125)
+#         pass
+
+class Boost_LeftSkiing:
     @staticmethod
     def enter(player, e):
-        player.dir = 0
+        player.dir = -1
         server.boost = 1.5
-        player.wait_time = get_time()
+        if(server.boost_start):
+            player.wait_time = get_time()
+            server.boost_start = False
         pass
 
     @staticmethod
     def exit(player, e):
-        server.boost = 1
-        server.boost_start = False
+        #server.boost = 1
+        #server.boost_start = False
         pass
 
     @staticmethod
     def do(player):
-        player.x = 300
+        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time* server.level
         player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
+        if (player.x < 0):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = Boost_RightSkiing
+            player.state_machine.cur_state.enter(player, None)
         if (server.stop):
             player.state_machine.cur_state.exit(player, None)
             player.state_machine.cur_state = End
@@ -209,13 +248,53 @@ class Boost:
 
         if get_time() - player.wait_time > 5:
             player.state_machine.handle_event(('TIME_OUT', 0))
+            server.boost = 1
+        pass
+
+    @staticmethod
+    def draw(player):
+        player.fireparticle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y+15, 125, 125)
+        player.image.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y, 125, 125)
+        pass
+
+class Boost_RightSkiing:
+    @staticmethod
+    def enter(player, e):
+        player.dir = 1
+        server.boost = 1.5
+        if (server.boost_start):
+            player.wait_time = get_time()
+            server.boost_start = False
+        pass
+
+    @staticmethod
+    def exit(player, e):
+        #server.boost = 1
+        #server.boost_start = False
+        pass
+
+    @staticmethod
+    def do(player):
+        player.x += player.dir * SKIING_SPEED_PPS * game_framework.frame_time* server.level
+        player.frame = (player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * server.level * server.boost) % 7
+        if (player.x > 600):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = Boost_LeftSkiing
+            player.state_machine.cur_state.enter(player, None)
+        if (server.stop):
+            player.state_machine.cur_state.exit(player, None)
+            player.state_machine.cur_state = End
+            player.state_machine.cur_state.enter(player, None)
+
+        if get_time() - player.wait_time > 5:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+            server.boost = 1
         pass
 
     @staticmethod
     def draw(player):
         player.fireparticle.clip_composite_draw(int(player.frame) * 100, 0, 100, 103, 0, 'h', player.x, player.y+15, 125, 125)
         player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 125, 125)
-        pass
 
 
 
@@ -227,7 +306,9 @@ class StateMachine:
             Start: {time_out:LeftSkiing},
             LeftSkiing: {space_down:RightSkiing},
             RightSkiing: {space_down:LeftSkiing},
-            Boost: {time_out:LeftSkiing},
+            #Boost: {time_out:LeftSkiing},
+            Boost_LeftSkiing: {time_out:LeftSkiing, space_down:Boost_RightSkiing},
+            Boost_RightSkiing: {time_out:RightSkiing, space_down:Boost_LeftSkiing},
             End:{time_out:Start}
         }
 
