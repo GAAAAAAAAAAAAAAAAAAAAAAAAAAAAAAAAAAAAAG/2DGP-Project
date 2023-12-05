@@ -69,6 +69,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_1:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -76,6 +77,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_2:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -83,6 +85,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_3:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -90,6 +93,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_4:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -97,6 +101,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_5:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -104,6 +109,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_6:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -111,6 +117,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_7:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -118,6 +125,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_8:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -125,6 +133,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_9:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -132,6 +141,7 @@ class Start:
                 for event in events:
                     if event.type == SDL_KEYDOWN and event.key == SDLK_0:
                         player.start = False
+                        Player.boost_sound.play()
                         player.state_machine.cur_state.exit(player, None)
                         player.state_machine.cur_state = Boost_LeftSkiing
                         player.state_machine.cur_state.enter(player, None)
@@ -405,7 +415,7 @@ class Player:
             Player.applause_sound = load_wav('applause.wav')
             Player.boost_sound = load_wav('boostsound.wav')
             Player.point_eat_sound.set_volume(50)
-            Player.star_eat_sound.set_volume(50)
+            Player.star_eat_sound.set_volume(55)
             Player.applause_sound.set_volume(25)
             Player.boost_sound.set_volume(50)
 
@@ -433,5 +443,7 @@ class Player:
         if group == 'player:star':
             Player.star_eat_sound.play()
             Player.boost_sound.play()
+        if group == 'player:heartitem':
+            Player.star_eat_sound.play()
         pass
 

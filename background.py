@@ -42,18 +42,18 @@ class Background:
         self.image = load_image('ScrallbackgroundLong.png')
         self.y = -800
         self.bgm = load_music('bgm.mp3')
-        self.bgm.set_volume(32)
+        self.bgm.set_volume(27)
         self.bgm.repeat_play()
 
     def draw(self):
-        self.image.clip_draw(0, 15800 + int(self.y), 600, 800, 300, 400)
+        self.image.clip_draw(0, 10000 + int(self.y), 600, 800, 300, 400)
         #self.image.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
         #player.image.clip_draw(int(player.frame) * 100, 0, 100, 103, player.x, player.y, 75, 75)
 
     def update(self):
         if server.stop == False:
             self.y -= SKIING_SPEED_PPS * game_framework.frame_time * server.level * server.boost
-        if(self.y<-15000):
+        if(self.y<-9200):
             self.y = -800
         pass
 

@@ -6,12 +6,12 @@ import play_mode
 def init():
     global image
     global titlesound
-    #global titleclicksound
+
     image = load_image('title.png')
     titlesound = load_music('titlesound.mp3')
-    #titleclicksound = load_music('titleclicksound.wav')
+
     titlesound.set_volume(25)
-    #titleclicksound.set_volume(25)
+
     titlesound.repeat_play()
 
 def finish():
@@ -25,7 +25,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
             game_framework.change_mode(explanation_mode)
 
 
